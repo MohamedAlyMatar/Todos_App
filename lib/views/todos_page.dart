@@ -7,8 +7,28 @@ import 'package:tasks_app/utils/widgets/edit_task_dialog.dart';
 
 import '../services/todo_services.dart';
 
-class TodosPage extends StatelessWidget {
+class TodosPage extends StatefulWidget {
   TodosPage({super.key});
+
+  @override
+  State<TodosPage> createState() => _TodosPageState();
+}
+
+class _TodosPageState extends State<TodosPage> {
+  final listController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    listController.addListener(() {
+      if (listController.position.maxScrollExtent == listController.offset) {
+        print("calling fetch...");
+        final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+        print("Fetching more todos...");
+        todoProvider.fetchTodos();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,49 +50,63 @@ class TodosPage extends StatelessWidget {
           : Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
-                itemCount: todos.length,
+                controller: listController,
+                itemCount: todos.length + 1,
                 itemBuilder: (context, index) {
-                  final todo = todos[index];
-                  return Card(
-                    color: todo.completed ? Colors.green : Colors.orange,
-                    child: ListTile(
-                      leading: IconButton(
-                        onPressed: () => todosProvider.toggleTodoStatus(
-                            todo.id, todo.completed),
-                        icon: Icon(
-                          todo.completed ? Icons.square : Icons.square_outlined,
-                          color: Colors.white,
+                  if (index < todos.length) {
+                    final todo = todos[index];
+                    return Card(
+                      color: todo.completed ? Colors.green : Colors.orange,
+                      child: ListTile(
+                        leading: IconButton(
+                          onPressed: () => todosProvider.toggleTodoStatus(
+                              todo.id, todo.completed),
+                          icon: Icon(
+                            todo.completed
+                                ? Icons.square
+                                : Icons.square_outlined,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      title: Text(
-                        todo.todo,
-                        style: TextStyle(
-                          decoration: todo.completed
-                              ? TextDecoration.lineThrough
-                              : null,
-                          color: Colors.white,
-                        ),
-                      ),
-                      subtitle: Text(
-                        todo.completed ? 'Done' : 'Todo',
-                        style: const TextStyle(color: Colors.white70),
-                      ),
-                      trailing: IconButton(
-                        onPressed: () => todosProvider.deleteTodo(todo.id),
-                        icon: const Icon(Icons.delete, color: Colors.white),
-                      ),
-                      onTap: () async {
-                        final updatedTodo = await editTaskDialog(
-                          context,
-                          todo.id,
+                        title: Text(
                           todo.todo,
-                        );
-                        if (updatedTodo != null) {
-                          todosProvider.editTodoText(todo.id, updatedTodo);
-                        }
-                      },
-                    ),
-                  );
+                          style: TextStyle(
+                            decoration: todo.completed
+                                ? TextDecoration.lineThrough
+                                : null,
+                            color: Colors.white,
+                          ),
+                        ),
+                        subtitle: Text(
+                          todo.completed ? 'Done' : 'Todo',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                        trailing: IconButton(
+                          onPressed: () => todosProvider.deleteTodo(todo.id),
+                          icon: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        onTap: () async {
+                          final updatedTodo = await editTaskDialog(
+                            context,
+                            todo.id,
+                            todo.todo,
+                          );
+                          if (updatedTodo != null) {
+                            todosProvider.editTodoText(todo.id, updatedTodo);
+                          }
+                        },
+                      ),
+                    );
+                  } else {
+                    return const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
             ),

@@ -9,7 +9,12 @@ class TodoProvider extends ChangeNotifier {
   List<TodoModel> get todos => _todos;
 
   Future<void> fetchTodos() async {
-    _todos = await _todoService.getTodos();
+    var newTodos = await _todoService.getTodos();
+    if (newTodos.isNotEmpty) {
+      _todos.addAll(newTodos);
+    } else {
+      print("No more todos to fetch.");
+    }
     notifyListeners();
   }
 

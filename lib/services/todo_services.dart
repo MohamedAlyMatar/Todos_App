@@ -5,22 +5,54 @@ import 'package:tasks_app/models/todo_model.dart';
 
 class TodoService {
   final String todosEndpoint = "https://dummyjson.com/todos";
+
+  int _skip = 0;
+  final int _limit = 10;
   static const String storageKey = 'todos';
+  bool isLoading = false;
 
   Future<List<TodoModel>> getTodos() async {
-    List<TodoModel> todos = [];
+    if (isLoading) return [];
+    isLoading = true;
+    List<TodoModel> newTodos = [];
+
     try {
-      var response = await Dio().get(todosEndpoint);
+      // Dynamically update the skip value
+      String endpoint = "https://dummyjson.com/todos?limit=$_limit&skip=$_skip";
+      var response = await Dio().get(endpoint);
+      print("API Response: ${response.data}");
+
       var data = response.data['todos'];
-      data.forEach((todo) => todos.add(TodoModel.fromJson(todo)));
+      data.forEach((todo) => newTodos.add(TodoModel.fromJson(todo)));
+
+      _skip += _limit;
+
       // todos = data.map<TodoModel>((todo) => TodoModel.fromJson(todo)).toList();
-      await saveTodosLocally(todos);
+      // List<TodoModel> newTodos =
+      //     data.map<TodoModel>((todo) => TodoModel.fromJson(todo)).toList();
     } catch (e) {
-      print("Error fetching todos from API: ${e.toString()}");
-      todos = await fetchTodosLocally();
+      print("Error fetching todos: ${e.toString()}");
+      newTodos = await fetchTodosLocally();
+    } finally {
+      isLoading = false;
     }
-    return todos;
+    return newTodos;
   }
+
+  // Future<List<TodoModel>> getTodos() async {
+  //   List<TodoModel> todos = [];
+  //   try {
+  //     var response = await Dio().get(todosEndpoint);
+  //     var data = response.data['todos'];
+  //     data.forEach((todo) => todos.add(TodoModel.fromJson(todo)));
+  //     // todos = data.map<TodoModel>((todo) => TodoModel.fromJson(todo)).toList();
+  //     await saveTodosLocally(todos);
+  //   } catch (e) {
+  //     print("Error fetching todos from API: ${e.toString()}");
+  //     todos = await fetchTodosLocally();
+  //   }
+  //   return todos;
+  // }
 
   Future<void> saveTodosLocally(List<TodoModel> todos) async {
     final prefs = await SharedPreferences.getInstance();

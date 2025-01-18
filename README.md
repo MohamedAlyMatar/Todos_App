@@ -44,7 +44,6 @@ The **Task Manager App** is a Flutter application designed to test fetching and 
 ## UI Enhancements
 - **Design Packages**:
   - **Awesome Snackbar**: Enhanced user feedback and notifications.
-  - **Page Transition**: Smooth and customizable transitions between screens.
 - **Customizations**:
   - Changed the font family for a modern and clean look.
   - Added a splash screen for a professional app launch experience.

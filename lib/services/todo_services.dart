@@ -17,7 +17,6 @@ class TodoService {
     List<TodoModel> newTodos = [];
 
     try {
-      // Dynamically update the skip value
       String endpoint = "https://dummyjson.com/todos?limit=$_limit&skip=$_skip";
       var response = await Dio().get(endpoint);
       print("API Response: ${response.data}");

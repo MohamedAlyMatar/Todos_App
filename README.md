@@ -1,16 +1,55 @@
-# tasks_app
+# Task Manager App
 
-A new Flutter project.
+## Overview
+The **Task Manager App** is a Flutter application designed to test fetching and working on APIs of tasks efficiently for the users to manage their tasks. With a clean and intuitive user interface, robust state management, seamless performance, and persistent data storage, the app ensures a smooth and reliable experience.
 
-## Getting Started
+## Key Features
 
-This project is a starting point for a Flutter application.
+### 1. User Authentication
+- **Authentication**: Users can securely log in using their username and password.
+- **API**: Authentication is implemented using the [DummyJSON API](https://dummyjson.com/docs/auth).
 
-A few resources to get you started if this is your first Flutter project:
+### 2. Task Management
+- Users can:
+  - View tasks.
+  - Add new tasks.
+  - Edit existing tasks.
+  - Delete tasks.
+- **API**: Task management utilizes the [DummyJSON Todos API](https://dummyjson.com/docs/todos).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 3. Pagination
+- **Feature**: Efficiently fetch large numbers of tasks using pagination.
+- **Implementation**: 
+  - API endpoint: `https://dummyjson.com/todos?limit=10&skip=10`.
+  - This allows smooth scrolling and optimized data retrieval.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 4. State Management
+- **Option Used**: Provider
+- **Goal**: Ensure efficient state updates across the app and maintain consistency.
+
+### 5. Local Storage
+- **Persistence**: Tasks are stored locally using:
+  - Flutter's shared preferences.
+  - SQLite database.
+- **Benefit**: Tasks remain accessible even when the app is closed and reopened.
+
+### 6. Unit Tests (Planned)
+- **Coverage**:
+  - Task CRUD operations.
+  - Input validation.
+  - State management.
+  - Network requests.
+- **Testing Tools**: Mock responses using [reqres.in](https://reqres.in) endpoints.
+
+## UI Enhancements
+- **Design Packages**:
+  - **Awesome Snackbar**: Enhanced user feedback and notifications.
+  - **Page Transition**: Smooth and customizable transitions between screens.
+- **Customizations**:
+  - Changed the font family for a modern and clean look.
+  - Added a splash screen for a professional app launch experience.
+
+## Demo
+Check out the video demo of the app [here](#).
+
+
